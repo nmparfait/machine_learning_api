@@ -1,25 +1,13 @@
 import warnings
-import pandas as pd
 from flask import Flask, request, jsonify
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
 from textblob import TextBlob
+from sklearn.linear_model import LinearRegression
+import pickle
 
-df = pd.read_csv('casas.csv')
+# use the serialization with pickle in order to upload file with speed
+modelo = pickle.load(open('modelo.sav', 'rb'))
 
-# escolher apenas as colunas que usaremos para criar o nosso modelo
 colunas = ['tamanho', 'ano', 'garagem']
-#df = df[colunas]
-
-# valor preditor
-X = df.drop('preco', axis=1)
-y = df['preco']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 0.3, random_state = 42)
-
-modelo = LinearRegression()
-modelo.fit(X_train, y_train)
-
 app = Flask(__name__)
 
 

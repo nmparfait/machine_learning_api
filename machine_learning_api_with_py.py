@@ -1,6 +1,6 @@
 import warnings
 import pandas as pd
-from flask import Flask
+from flask import Flask, request, jsonify
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from textblob import TextBlob
@@ -8,8 +8,8 @@ from textblob import TextBlob
 df = pd.read_csv('casas.csv')
 
 # escolher apenas as colunas que usaremos para criar o nosso modelo
-colunas = ['tamanho', 'preco']
-df = df[colunas]
+colunas = ['tamanho', 'ano', 'garagem']
+#df = df[colunas]
 
 # valor preditor
 X = df.drop('preco', axis=1)
@@ -37,10 +37,12 @@ def sentimento(frase):
     polaridade = tb_en.sentiment.polarity
     return "polaridade: {}".format(polaridade)
 
-@app.route("/cotacao/<int:tamanho>")
+@app.route("/cotacao/", methods=['POST'])
 def cotacao(tamanho):
-    preco = modelo.predict([[tamanho]])
-    return str(preco)
+    dados = request.get_json()
+    dados_input = [dados[col] for col in colunas]
+    preco = modelo.predict([dados_input])
+    return jsonify(preco=preco[0])
 
 
 app.run(debug=True)

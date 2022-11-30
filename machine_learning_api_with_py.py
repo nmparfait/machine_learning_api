@@ -18,7 +18,7 @@ def sentimento(frase):
     tb_en = tb.translate(to="en")
     warnings.warn("this is deprecated", DeprecationWarning, 2)
     polaridade = tb_en.sentiment.polarity
-    return f"polaridade: {polaridade}"
+    return "polaridade: {}".format(polaridade)
 
 
 app.run(debug=True)
